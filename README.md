@@ -9,6 +9,8 @@ It originally ran on DOS, and was built with the Watcom C++ compiler and Borland
 It was also distributed and featured in this book:
 [Tricks of the DOOM Programmining Gurus](https://archive.org/details/tricks-of-the-doom-programming-gurus)
 
+![Original Screenshot](images/book.png)
+
 For it's 30th anniversary, I ported it to Python using John Zelle's graphics.py.
 It works great!
 
