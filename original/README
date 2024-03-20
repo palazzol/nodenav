@@ -1,0 +1,162 @@
+Readme for NodeNav v0.8
+
+NODES navigator for DOOM WAD file
+
+Frank Palazzolo
+3/25/94
+
+***  Attention DOOM hackers!!!  ***
+Consider this a call to action!
+
+According to the latest unofficial DOOM spec(*),
+the least understood data structure in the WAD file 
+is the NODES data structure.  Understanding how to generate 
+a NODES/SSECTORS/SEGS list from a VERTEX/LINEDEF
+description is crucial to being able to generate your
+own level (with your own wall structure). 
+This seems to be corraborated by the fact that this
+feature is missing from all third-party DOOM editors.
+
+Note: If you don't know what I'm talking about,
+      please see the DOOM spec(*) and all will
+      become clear!
+
+My program allows you to observe the geometry of the NODES
+structure for a particular DOOM level.  It is quite simple,
+but was a real hack job thrown together in a few days in
+in hybrid C/C++.  It has not been optimized and has not been used
+much as I am anxious to post it so that fellow computer graphics
+hacks can use it to (hopefully) come up with the answers!
+
+Files:
+------
+
+DOS4GW.EXE	Dos extender necessary to run this
+NODENAV.EXE	The program!
+NODENAV.CPP	Watcom C++32 source
+NODENAV.H	(Include file)
+README		(this file)
+
+
+Command Line Parameters:
+------------------------
+
+NODENAV ExMx [wadfile]
+
+ex. NODENAV E2M9    (Episode 2, Mission 9)
+
+Note: E2M9 seems to be good test case, being fairly simple.
+
+You are presented with a gray LINEDEF map of the level.
+The topline looks something like...
+
+NodeNav v0.8         A:XX       B:YY    C:ZZ    
+
+where...
+
+   A is (N)ode, the current node with number XX.
+   It is represented by a GREEN line on the map...
+
+   B is the "left" child of the current node,
+   either a (N)ode or (S)sector, with the number YY.
+   It is represented by a RED rectangle on the map...
+
+   C is the "right" child of the current node,
+   either a (N)ode or (S)sector, with the number ZZ.
+   It is represented by a BLUE rectangle on the map...
+
+Note: (My notions of left and right are PURELY arbitrary)
+
+The commands are:
+
+	U - Go up a level
+	L - Descend to the Left
+	R - Descend to the Right
+	Q - Quit
+
+This first version automatically zooms in and out to
+allow you to see detail.
+
+Future Enhancements:
+--------------------
+
+More Commands.... Esc to exit, for example...
+Highlighting the actual SEGS in the SSECTOR when
+you get to the bottom of the tree...
+The sky's the limit here...
+
+What We Know:
+-------------
+
+The NODES structure seems to represent nodes in a
+Binary Space Partitioning tree-like structure.
+(Everything I know about these I've learned from 
+chap. 15 of Foley/Van Dam's "Computer Graphics"
+in the last few weeks).  Each node subdivides
+the map into smaller rectangular regions, subdividing 
+the entire level until finally only SSECTORS are left
+as the terminating leaves. (SSECTORS being groups of SEGS,
+and SEGS being pieces of LINEDEFS).
+
+What I think:
+-------------
+
+It seems that each SSECTOR is made up of SEGS which are
+in a certain way non-convex (sort of).  Namely, the SEGS
+in a SSECTOR (which bound a SECTOR), must intersect at a angle
+of <= 180 degrees, as measured from all SECTORS around this
+VERTEX.  This has the effect that...
+
+Part of a SSECTOR can never be obscured by another part of the
+same SSECTOR (as long as you are in a "legal" part of the map,
+in a SECTOR).  
+
+Furthermore, it seems that as you walk in any bounding 
+rectangle of a SSECTOR, there is a list you can create to render
+each SSECTOR in order from back to front, or front to back, as with
+a conventional BSP tree.
+
+This means that all vertices which do not meet this criteria must
+eventually be split by a bounding rectangle in order to form
+part of two (or more) SSECTORS.
+
+In creating these bounding rectangles, some LINEDEFS may be
+split incedentally, forming two SEGS.  This would explain
+why there are so many more SEGS than LINEDEFS.
+
+Points of Confusion:   
+--------------------
+
+As you will notice, sometimes the child rectangles 
+overlap, and the NODE line (green) does not split the 
+two at all! Maybe this doesn't matter, as long as 
+each terminating SSECTOR meets the "non-convex" criteria.
+
+An algorithm to transform LINEDEFS/VERTICES into NODES/SSECTORS/
+SEGS is still unknown (to me at least) at this time.  I will 
+try my luck with this next.  
+
+I cannot stress this next point enough:
+
+	This algorithm is the holy grail of DOOM hackerdom.
+
+Good Luck!
+
+keep in touch, we're all in this together...
+ 
+*** Please email comments on this program and any 
+insights you have into the nature of NODES to me at...
+
+	palazzol@msen.com
+ 
+    (and post to comp.graphics.algorithms
+    and alt.games.doom if possible...)
+  
+------------------------------------------------------------
+footnotes:
+(*)(v1.2, released by ap641@cleveland.freenet.edu)
+	to be found on wuarchive.wustl.edu...
+	(a must read for the DOOM hacker)
+
+
+
